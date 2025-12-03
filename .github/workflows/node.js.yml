@@ -1,0 +1,36 @@
+name: Node.js CI (Integración Continua)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+    # 1. Descargar el repositorio
+    - name: Checkout del código
+      uses: actions/checkout@v3
+
+    # 2. Instalar Node.js
+    - name: Usar Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    # 3. Instalar dependencias
+    - name: Instalar dependencias
+      run: npm ci
+
+    # 4. Ejecutar las pruebas
+    - name: Ejecutar Tests
+      run: npm test
